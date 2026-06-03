@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
 <title>ChronicAI — Chronic Disease Predictor</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🔍</text></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🩺</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -240,8 +240,9 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);font-si
 .donut-legend{display:flex;flex-direction:column;gap:20px}
 .dl-item{display:flex;align-items:center;justify-content:space-between;gap:16px;min-width:220px}
 .dl-left{display:flex;align-items:center;gap:.65rem;color:var(--text2);font-size:1rem}
-.dl-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.dl-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:0.25px solid rgba(0,0,0,0.05)}
 .dl-val{font-family:var(--font-display);font-size:1.3rem;font-weight:700}
+
 
 /* ── SCENARIOS — bigger bar chart ── */
 .scenarios-card{background:white;border-radius:var(--r);padding:2rem;box-shadow:var(--sh-sm);border:0.5px solid var(--border2);margin-bottom:1.75rem}
@@ -539,7 +540,6 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
     <div class="footer-logo">ChronicAI</div>
     <div class="footer-tagline">AI for early prevention. Built for better health decisions.</div>
     <div class="footer-tags">
-      <div class="footer-tag">Academic Exhibition</div>
       <div class="footer-tag">Random Forest ML</div>
       <div class="footer-tag">Flask + Python</div>
       <div class="footer-tag">Preventive Healthcare</div>
@@ -583,7 +583,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <div id="sd" class="screen">
   <nav class="dnav">
     <div class="dnav-logo">
-      <div class="dnav-logo-ico">🫀</div>
+      <div class="dnav-logo-ico">🩺</div>
       <div>
         <div class="dnav-logo-name">ChronicAI</div>
         <span class="dnav-logo-tag">AI Health Assessment</span>
@@ -635,6 +635,10 @@ const _obs = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersectin
 document.querySelectorAll('.fade-in').forEach(el => _obs.observe(el));
 
 function startAssessment() {
+  S.answers = {};
+  S.curQ = 0;
+  S.results = null;
+  S.reportId = null;
   goTo('sq');
   renderQ(0);
 }

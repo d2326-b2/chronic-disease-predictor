@@ -319,7 +319,7 @@ function buildDash(d){
     const isHi=disease===hi;
     html+=`<div class="rc${isHi?' highest':''}">
       <div class="rc-accent" style="background:${col}"></div>
-      <div class="rc-icon">${DI[disease]?.icon||'🫀'}</div>
+      <div class="rc-icon">${DI[disease]?.icon||'🧬'}</div>
       <div class="rc-name">${disease}</div>
       <div class="rc-pct" style="color:${col}">${r.current}%</div>
       <span class="rc-badge ${bc(r.current)}">${lvl(r.current)}</span>
@@ -540,13 +540,15 @@ function buildDonut(d){
   const ctx = document.getElementById('donut-cv');
   if(!ctx)return;
   if(donutChart){donutChart.destroy();donutChart=null;}
+  const diseaseNames = Object.keys(d.risks);
+  const colors = diseaseNames.map(disease => COLORS[disease]);
   donutChart = new Chart(ctx,{
     type:'doughnut',
     data:{
-      labels:Object.keys(d.risks),
+      labels:diseaseNames,
       datasets:[{
         data:Object.values(d.risks).map(r=>r.current),
-        backgroundColor:['#f59e0b','#ef4444','#ec4899'],
+        backgroundColor:colors,
         borderWidth:6,
         borderColor:'white',
         hoverOffset:10
@@ -556,7 +558,20 @@ function buildDonut(d){
       cutout:'65%',
       plugins:{
         legend:{display:false},
-        tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw}%`}}
+        tooltip:{
+          callbacks:{
+            label:c=>{
+              const color = Array.isArray(c.dataset.backgroundColor) ? c.dataset.backgroundColor[c.dataIndex] : c.dataset.backgroundColor;
+              return `${c.label}: ${c.raw}%`;
+            }
+          },
+          backgroundColor:'rgba(0,0,0,0.85)',
+          padding:10,
+          titleColor:'#fff',
+          bodyColor:'#fff',
+          borderColor:'#fff',
+          borderWidth:1
+        }
       },
       animation:{duration:1000,easing:'easeInOutQuart'}
     }
@@ -574,6 +589,16 @@ function buildBar(d){
   const current  = Object.values(d.risks).map(r=>r.current);
   const improved = Object.values(d.risks).map(r=>r.improved);
   const worsened = Object.values(d.risks).map(r=>r.worsened);
+  
+  // Convert hex colors to RGBA for current risk bars
+  const currentColors = labels.map(disease => {
+    const hex = COLORS[disease].substring(1);
+    const r = parseInt(hex.substring(0,2), 16);
+    const g = parseInt(hex.substring(2,4), 16);
+    const b = parseInt(hex.substring(4,6), 16);
+    return `rgba(${r},${g},${b},.85)`;
+  });
+
 
   barChart = new Chart(ctx,{
     type:'bar',
@@ -583,7 +608,7 @@ function buildBar(d){
         {
           label:'Current Risk',
           data:current,
-          backgroundColor:['rgba(245,158,11,.85)','rgba(239,68,68,.85)','rgba(236,72,153,.85)'],
+          backgroundColor:currentColors,
           borderRadius:6,
           borderSkipped:false,
         },
@@ -849,11 +874,7 @@ function downloadPDF(){
     const u8arr = new Uint8Array(n);
     for (let i = 0; i < n; i++) u8arr[i] = bstr.charCodeAt(i);
     const blob = new Blob([u8arr], { type: 'application/pdf' });
-    if (navigator.share) {
-      navigator.share({ files:[new File([blob], fileName, {type:'application/pdf'})], title:'Health Report', text:'My health risk assessment' }).catch(()=>downloadViaLink(blob, fileName));
-    } else {
-      downloadViaLink(blob, fileName);
-    }
+    downloadViaLink(blob, fileName);
   } catch(e) {
     console.error('Download error:', e);
     alert('Download failed. Please try again.');
