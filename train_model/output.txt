@@ -1,0 +1,96 @@
+
+================================================================
+  Chronic Disease Risk Predictor — Model Training Report
+================================================================
+  Models  : Random Forest Classifier (sklearn)
+  Diseases: Diabetes Mellitus | Hypertension | Cardiovascular Disease
+  Features: 14 questionnaire-mapped features
+================================================================
+
+==================================================
+  Diabetes Mellitus — Evaluation
+==================================================
+              precision    recall  f1-score   support
+
+     No Risk       0.80      0.75      0.77       100
+     At Risk       0.58      0.65      0.61        54
+
+    accuracy                           0.71       154
+   macro avg       0.69      0.70      0.69       154
+weighted avg       0.72      0.71      0.72       154
+
+  ROC-AUC:           0.7747
+  5-Fold CV AUC:     0.7811 ± 0.0923
+
+==================================================
+  Hypertension — Evaluation
+==================================================
+              precision    recall  f1-score   support
+
+     No Risk       0.99      0.95      0.97      2362
+     At Risk       0.96      0.99      0.98      2855
+
+    accuracy                           0.97      5217
+   macro avg       0.97      0.97      0.97      5217
+weighted avg       0.97      0.97      0.97      5217
+
+  ROC-AUC:           0.9978
+  5-Fold CV AUC:     0.9954 ± 0.0015
+
+==================================================
+  Cardiovascular Disease — Evaluation
+==================================================
+              precision    recall  f1-score   support
+
+     No Risk       0.80      0.75      0.77        32
+     At Risk       0.73      0.79      0.76        28
+
+    accuracy                           0.77        60
+   macro avg       0.77      0.77      0.77        60
+weighted avg       0.77      0.77      0.77        60
+
+  ROC-AUC:           0.8265
+  5-Fold CV AUC:     0.8816 ± 0.0927
+
+============================================================
+  Example Prediction from Questionnaire Responses
+============================================================
+  Feature vector: [45, 0, 29.4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+
+  Disease                          Risk %  Level
+  ------------------------------------------------
+  Diabetes Mellitus                 70.1%  High
+  Hypertension                      21.5%  Low
+  Cardiovascular Disease            54.6%  Moderate
+
+Feature Encoding Reference
+---------------------------
+Index | Feature            | Range  | Description
+------+--------------------+--------+----------------------------------
+  0   | age                | 10-90  | Age in years
+  1   | sex                | 0-1    | 0=Male, 1=Female
+  2   | bmi                | float  | Weight(kg) / Height(m)^2
+  3   | exercise           | 0-3    | 0=Never ... 3=5+days/week
+  4   | diet_quality       | 0-3    | 0=Junk ... 3=Very healthy
+  5   | smoking            | 0-3    | 0=Daily ... 3=Never
+  6   | sleep_hrs          | 0-3    | 0=<5hrs ... 3=>8hrs
+  7   | stress_level       | 0-3    | 0=Constant ... 3=Rarely
+  8   | water_intake       | 0-2    | 0=<1L, 1=1-2L, 2=>2L
+  9   | family_diabetes    | 0-1    | Family history of diabetes
+ 10   | family_cvd_htn     | 0-1    | Family history of CVD/HTN
+ 11   | bp_level           | 0-2    | 0=High(140+), 1=Elevated, 2=Normal
+ 12   | blood_sugar        | 0-2    | 0=High(126+), 1=Pre-diabetic, 2=Normal
+ 13   | high_cholesterol   | 0-1    | Cholesterol > 200 mg/dL
+
+[Done] Files saved:
+  rf_diabetes.pkl          + imputer_diabetes.pkl
+  rf_hypertension.pkl      + imputer_hypertension.pkl
+  rf_cvd.pkl               + imputer_cvd.pkl
+  model_evaluation.png
+  output.txt
+
+To load a model later:
+  model   = joblib.load('rf_diabetes.pkl')
+  imputer = joblib.load('imputer_diabetes.pkl')
+  x       = imputer.transform([vector])
+  risk    = model.predict_proba(x)[0][1]

@@ -65,7 +65,6 @@ cloudflared
 # Generated Files
 # ============================================================================
 static/reports/
-train_model/output.txt
 *.log
 *.pid
 .coverage
